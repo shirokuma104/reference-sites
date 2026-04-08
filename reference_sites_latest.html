@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>参考サイト一覧</title>
+<!-- ファビコン設定 -->
+<link rel="icon" type="image/png" href="favicon_RSsite.png">
+<link rel="apple-touch-icon" href="favicon_RSsite.png">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -44,19 +47,15 @@
     min-height: 100vh;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    padding: 2rem;
-    gap: 24px;
+    padding: 2rem; gap: 24px;
   }
   .login-card {
-    background: var(--bg);
-    border: 0.5px solid var(--border-md);
-    border-radius: var(--radius-lg);
-    padding: 2rem 2rem 2.5rem;
-    width: 100%; max-width: 360px;
-    text-align: center;
+    background: var(--bg); border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-lg); padding: 2rem 2rem 2.5rem;
+    width: 100%; max-width: 360px; text-align: center;
     display: flex; flex-direction: column; align-items: center; gap: 16px;
   }
-  .login-icon { font-size: 36px; }
+  .login-icon { width: 72px; height: 72px; border-radius: 16px; object-fit: cover; }
   .login-title { font-size: 18px; font-weight: 500; }
   .login-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
   .btn-google {
@@ -77,18 +76,16 @@
     padding: 10px 16px; position: sticky; top: 0; z-index: 10;
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
   }
+  .header-left { display: flex; align-items: center; gap: 8px; }
+  .header-favicon { width: 24px; height: 24px; border-radius: 6px; object-fit: cover; }
   .app-title { font-size: 15px; font-weight: 500; }
   .header-right { display: flex; align-items: center; gap: 8px; }
-  .user-avatar {
-    width: 30px; height: 30px; border-radius: 50%;
-    object-fit: cover; border: 0.5px solid var(--border-md);
-  }
+  .user-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 0.5px solid var(--border-md); }
   .user-name { font-size: 12px; color: var(--text-secondary); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .btn-logout {
     background: transparent; border: 0.5px solid var(--border-md);
     border-radius: var(--radius-md); padding: 5px 10px;
-    font-size: 12px; cursor: pointer; color: var(--text-secondary);
-    font-family: inherit;
+    font-size: 12px; cursor: pointer; color: var(--text-secondary); font-family: inherit;
   }
   .btn-logout:active { background: var(--bg-secondary); }
   .btn-add-main {
@@ -267,7 +264,7 @@
 <div id="login-screen" style="display:none;">
   <div class="login-screen">
     <div class="login-card">
-      <div class="login-icon">📌</div>
+      <img class="login-icon" src="favicon_RSsite.png" alt="アイコン" />
       <div class="login-title">参考サイト一覧</div>
       <div class="login-desc">Googleアカウントでログインすると、どの端末からでも同じデータにアクセスできます。</div>
       <button class="btn-google" onclick="loginWithGoogle()">
@@ -286,7 +283,10 @@
 <!-- メインアプリ -->
 <div id="app-screen" style="display:none;">
   <header class="app-header">
-    <span class="app-title">📌 参考サイト一覧</span>
+    <div class="header-left">
+      <img class="header-favicon" src="favicon_RSsite.png" alt="" />
+      <span class="app-title">参考サイト一覧</span>
+    </div>
     <div class="header-right">
       <img class="user-avatar" id="user-avatar" src="" alt="" />
       <span class="user-name" id="user-name"></span>
@@ -355,14 +355,11 @@ let data = { genres: ['AI関連', '動画制作', 'デザイン', '開発'], sit
 let activeGenre = 'すべて';
 let editId = null;
 
-/* ── Firestore読み書き ── */
 async function loadFromFirestore() {
   try {
     const ref = doc(db, 'users', currentUser.uid);
     const snap = await getDoc(ref);
-    if (snap.exists()) {
-      data = snap.data();
-    }
+    if (snap.exists()) data = snap.data();
   } catch(e) { console.error(e); }
 }
 
@@ -373,7 +370,6 @@ async function saveToFirestore() {
   } catch(e) { console.error(e); }
 }
 
-/* ── 認証 ── */
 window.loginWithGoogle = async function() {
   const provider = new GoogleAuthProvider();
   try {
@@ -404,7 +400,6 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-/* ── ユーティリティ ── */
 function sortByName(list) {
   return [...list].sort((a, b) => a.name.localeCompare(b.name, 'ja'));
 }
@@ -418,7 +413,6 @@ function getHostLetter(url) {
   try { return new URL(url).hostname.replace(/^www\./, '')[0].toUpperCase(); } catch(e) { return '?'; }
 }
 
-/* ── ジャンル削除 ── */
 window.deleteGenre = function(genre, e) {
   e.stopPropagation();
   const cnt = data.sites.filter(s => s.genre === genre).length;
@@ -429,11 +423,9 @@ window.deleteGenre = function(genre, e) {
   if (cnt > 0) data.sites = data.sites.filter(s => s.genre !== genre);
   data.genres = data.genres.filter(g => g !== genre);
   if (activeGenre === genre) activeGenre = 'すべて';
-  saveToFirestore();
-  render();
+  saveToFirestore(); render();
 };
 
-/* ── カード ── */
 function buildCard(site) {
   const color = strToColor(site.url);
   const screenshotUrl = getScreenshotUrl(site.url);
@@ -488,7 +480,6 @@ window.onThumbError = function(id) {
   if (msg) msg.textContent = 'プレビュー取得失敗';
 };
 
-/* ── レンダリング ── */
 function renderTabs() {
   const el = document.getElementById('tabs');
   let html = `<button class="tab ${activeGenre==='すべて'?'active':''}" onclick="setGenre('すべて')">すべて<span class="cnt">${data.sites.length}</span></button>`;
@@ -516,7 +507,6 @@ function renderGrid() {
 function render() { renderTabs(); renderGrid(); }
 window.setGenre = function(g) { activeGenre = g; render(); };
 
-/* ── CRUD ── */
 window.deleteSite = function(id) {
   if (!confirm('このサイトを削除しますか？')) return;
   data.sites = data.sites.filter(x => x.id !== id);
