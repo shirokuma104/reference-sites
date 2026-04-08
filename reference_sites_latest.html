@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>参考サイト一覧</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f5f5f3;
+    --bg-tertiary: #e8e8e5;
+    --text: #1a1a18;
+    --text-secondary: #6b6b68;
+    --text-tertiary: #a0a09c;
+    --border: rgba(0,0,0,0.1);
+    --border-md: rgba(0,0,0,0.18);
+    --accent: #1a1a18;
+    --accent-text: #ffffff;
+    --info: #185fa5;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --danger: #a32d2d;
+    --danger-bg: #fff0f0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg-secondary: #262624; --bg-tertiary: #2e2e2c;
+      --text: #f0ede8; --text-secondary: #a8a8a4; --text-tertiary: #6a6a68;
+      --border: rgba(255,255,255,0.08); --border-md: rgba(255,255,255,0.16);
+      --accent: #f0ede8; --accent-text: #1c1c1a; --info: #85b7eb;
+      --danger: #f09595; --danger-bg: #3a1a1a;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    background: var(--bg-secondary); color: var(--text); min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .app-header {
+    background: var(--bg); border-bottom: 0.5px solid var(--border-md);
+    padding: 12px 16px; position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .app-title { font-size: 16px; font-weight: 500; }
+  .btn-add-main {
+    background: var(--accent); color: var(--accent-text); border: none;
+    border-radius: var(--radius-md); padding: 8px 16px; font-size: 14px;
+    font-weight: 500; cursor: pointer; font-family: inherit;
+  }
+  .btn-add-main:active { opacity: 0.7; }
+
+  /* ── Tabs ── */
+  .tabs-wrapper {
+    background: var(--bg); border-bottom: 0.5px solid var(--border-md);
+    overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .tabs-wrapper::-webkit-scrollbar { display: none; }
+  .tabs { display: flex; gap: 5px; padding: 8px 12px; width: max-content; min-width: 100%; align-items: center; }
+  .tab {
+    background: transparent; border: 0.5px solid var(--border-md);
+    border-radius: 99px; padding: 5px 13px; font-size: 13px;
+    cursor: pointer; color: var(--text-secondary); font-family: inherit; white-space: nowrap;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .tab.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  .cnt { font-size: 11px; opacity: 0.6; }
+
+  /* ジャンル削除ボタン（タブ内） */
+  .tab-del {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 15px; height: 15px; border-radius: 50%;
+    background: rgba(0,0,0,0.15); border: none; cursor: pointer;
+    font-size: 9px; line-height: 1; padding: 0; color: inherit;
+    flex-shrink: 0;
+  }
+  .tab.active .tab-del { background: rgba(255,255,255,0.25); color: var(--accent-text); }
+  .tab-del:hover { background: rgba(0,0,0,0.28); }
+  .tab.active .tab-del:hover { background: rgba(255,255,255,0.4); }
+  @media (prefers-color-scheme: dark) {
+    .tab-del { background: rgba(255,255,255,0.15); }
+    .tab-del:hover { background: rgba(255,255,255,0.3); }
+  }
+
+  /* ── Grid ── */
+  .main { padding: 12px; }
+  @media (min-width: 768px) { .main { padding: 20px; } }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  @media (min-width: 480px) { .grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); } }
+  @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; } }
+
+  /* ── Card ── */
+  .card {
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    display: flex; flex-direction: column; transition: border-color 0.15s;
+  }
+  .card:hover { border-color: var(--border-md); }
+
+  .card-preview {
+    height: 115px; position: relative; overflow: hidden;
+    flex-shrink: 0; background: var(--bg-secondary);
+  }
+  @media (min-width: 768px) { .card-preview { height: 135px; } }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  .shimmer { position: absolute; inset: 0; overflow: hidden; background: var(--bg-secondary); }
+  .shimmer::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, var(--bg-tertiary) 50%, transparent 100%);
+    animation: shimmer 1.4s infinite;
+  }
+
+  .thumb-img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: top; opacity: 0; transition: opacity 0.35s;
+  }
+  .thumb-img.visible { opacity: 1; }
+
+  .thumb-fallback {
+    position: absolute; inset: 0; display: none;
+    flex-direction: column; align-items: center; justify-content: center; gap: 7px;
+  }
+  .favicon-box {
+    width: 50px; height: 50px; border-radius: 13px; background: var(--bg);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .favicon-box img { width: 34px; height: 34px; object-fit: contain; }
+  .favicon-letter { font-size: 22px; font-weight: 700; line-height: 1; }
+  .thumb-msg { font-size: 10px; color: var(--text-tertiary); }
+
+  .card-body { padding: 10px 11px 11px; flex: 1; display: flex; flex-direction: column; }
+  .card-genre { font-size: 10px; color: var(--text-tertiary); margin-bottom: 2px; }
+  .card-name {
+    font-size: 13px; font-weight: 500; color: var(--info); text-decoration: none;
+    display: block; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .card-name:hover { text-decoration: underline; }
+  .card-url { font-size: 11px; color: var(--text-tertiary); margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card-memo { font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-height: 14px; }
+  .card-actions { display: flex; gap: 5px; }
+  .btn-sm {
+    flex: 1; background: transparent; border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-md); padding: 5px 0; font-size: 12px;
+    cursor: pointer; color: var(--text-secondary); font-family: inherit; text-align: center;
+  }
+  .btn-sm:active { background: var(--bg-secondary); }
+  .btn-del { color: var(--danger); border-color: var(--danger); }
+  .btn-del:active { background: var(--danger-bg); }
+
+  .empty { grid-column: 1/-1; padding: 3rem 1rem; text-align: center; color: var(--text-tertiary); font-size: 14px; line-height: 2.2; }
+
+  /* ── Modal ── */
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    display: flex; align-items: flex-end; justify-content: center; z-index: 50;
+  }
+  @media (min-width: 600px) { .modal-bg { align-items: center; } }
+  .modal {
+    background: var(--bg); border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: 16px 16px 36px; width: 100%; max-height: 94vh; overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (min-width: 600px) { .modal { border-radius: var(--radius-lg); max-width: 460px; padding: 24px; } }
+  .modal-handle { width: 36px; height: 4px; background: var(--border-md); border-radius: 99px; margin: 0 auto 14px; }
+  @media (min-width: 600px) { .modal-handle { display: none; } }
+  .modal h2 { font-size: 16px; font-weight: 500; margin-bottom: 14px; }
+  .field { margin-bottom: 11px; }
+  .field label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+  .field input, .field select, .field textarea {
+    width: 100%; background: var(--bg-secondary); border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-md); padding: 10px 12px; font-size: 15px; color: var(--text);
+    font-family: inherit; -webkit-appearance: none; appearance: none; outline: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
+  .field textarea { height: 68px; resize: vertical; }
+  .genre-row { display: flex; gap: 6px; }
+  .genre-row select, .genre-row input { flex: 1; min-width: 0; }
+  .btn-genre-add {
+    flex-shrink: 0; background: var(--bg-secondary); border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-md); padding: 10px 12px; font-size: 13px;
+    cursor: pointer; color: var(--text-secondary); font-family: inherit;
+  }
+  .modal-actions { display: flex; gap: 8px; margin-top: 14px; }
+  .btn-cancel {
+    flex: 1; background: var(--bg-secondary); border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-md); padding: 12px; font-size: 15px;
+    cursor: pointer; color: var(--text-secondary); font-family: inherit;
+  }
+  .btn-save {
+    flex: 2; background: var(--accent); color: var(--accent-text); border: none;
+    border-radius: var(--radius-md); padding: 12px; font-size: 15px; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+  }
+  .btn-save:active { opacity: 0.8; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <span class="app-title">📌 参考サイト一覧</span>
+  <button class="btn-add-main" onclick="openAdd()">＋ 追加</button>
+</header>
+<div class="tabs-wrapper"><div class="tabs" id="tabs"></div></div>
+<main class="main"><div class="grid" id="grid"></div></main>
+
+<div class="modal-bg" id="modal-bg" style="display:none;" onclick="bgClick(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2 id="modal-title">サイトを追加</h2>
+    <div class="field"><label>URL（必須）</label><input id="m-url" type="url" placeholder="https://example.com" /></div>
+    <div class="field"><label>サイト名（空欄でURLから自動取得）</label><input id="m-name" type="text" placeholder="サイト名" /></div>
+    <div class="field">
+      <label>ジャンル</label>
+      <div class="genre-row"><select id="m-genre"></select></div>
+    </div>
+    <div class="field">
+      <label>新しいジャンルを追加</label>
+      <div class="genre-row">
+        <input id="m-new-genre" type="text" placeholder="例：SEO対策" />
+        <button class="btn-genre-add" onclick="addGenre()">追加</button>
+      </div>
+    </div>
+    <div class="field"><label>メモ（任意）</label><textarea id="m-memo" placeholder="簡単な説明など"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">キャンセル</button>
+      <button class="btn-save" onclick="saveModal()">保存する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'ref_sites_v5';
+
+const PALETTES = ['#4f86f7','#e8734a','#6abf69','#e06c9f','#7c6af7','#f7c948','#4fc3f7','#f76f6f','#56c8b0','#c26af7','#f7a54a','#6ab8f7'];
+function strToColor(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+  return PALETTES[Math.abs(h) % PALETTES.length];
+}
+
+function loadData() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (d && d.genres && d.sites) return d;
+  } catch(e) {}
+  return {
+    genres: ['AI関連', '動画制作', 'デザイン', '開発'],
+    sites: [
+      { id: 1, name: 'Claude', url: 'https://claude.ai', genre: 'AI関連', memo: 'Anthropic製AI' },
+      { id: 2, name: 'Canva', url: 'https://www.canva.com', genre: 'デザイン', memo: 'オンラインデザインツール' },
+      { id: 3, name: 'YouTube', url: 'https://www.youtube.com', genre: '動画制作', memo: '動画投稿・参考視聴' }
+    ]
+  };
+}
+function saveData() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {} }
+
+let data = loadData();
+let activeGenre = 'すべて';
+let editId = null;
+
+/* 五十音順ソート */
+function sortByName(list) {
+  return [...list].sort((a, b) => a.name.localeCompare(b.name, 'ja'));
+}
+
+function getScreenshotUrl(url) {
+  return `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url`;
+}
+function getFaviconUrl(url) {
+  try { return `https://www.google.com/s2/favicons?domain=${new URL(url).hostname}&sz=64`; } catch(e) { return null; }
+}
+function getHostLetter(url) {
+  try { return new URL(url).hostname.replace(/^www\./, '')[0].toUpperCase(); } catch(e) { return '?'; }
+}
+
+/* ジャンル削除 */
+function deleteGenre(genre, e) {
+  e.stopPropagation(); // タブ選択を防ぐ
+  const siteCount = data.sites.filter(s => s.genre === genre).length;
+  if (siteCount > 0) {
+    if (!confirm(`「${genre}」を削除しますか？\nこのジャンルに登録された ${siteCount} 件のサイトも一緒に削除されます。`)) return;
+    data.sites = data.sites.filter(s => s.genre !== genre);
+  } else {
+    if (!confirm(`「${genre}」を削除しますか？`)) return;
+  }
+  data.genres = data.genres.filter(g => g !== genre);
+  if (activeGenre === genre) activeGenre = 'すべて';
+  saveData();
+  render();
+}
+
+function buildCard(site) {
+  const color = strToColor(site.url);
+  const screenshotUrl = getScreenshotUrl(site.url);
+  const faviconUrl = getFaviconUrl(site.url);
+  const letter = getHostLetter(site.url);
+  const displayUrl = site.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+  const faviconInner = faviconUrl
+    ? `<img src="${faviconUrl}" alt="" onerror="this.outerHTML='<span class=\\"favicon-letter\\" style=\\"color:${color};\\">${letter}</span>'" />`
+    : `<span class="favicon-letter" style="color:${color};">${letter}</span>`;
+
+  return `<div class="card">
+    <div class="card-preview" style="background:${color}15;">
+      <div class="shimmer" id="shimmer_${site.id}"></div>
+      <img class="thumb-img" id="thumb_${site.id}"
+        src="${screenshotUrl}" alt=""
+        onload="onThumbLoad(${site.id})"
+        onerror="onThumbError(${site.id})" />
+      <div class="thumb-fallback" id="fallback_${site.id}">
+        <div class="favicon-box">${faviconInner}</div>
+        <span class="thumb-msg" id="msg_${site.id}">読み込み中...</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-genre">${site.genre}</div>
+      <a class="card-name" href="${site.url}" target="_blank" rel="noopener" title="${site.name}">${site.name}</a>
+      <div class="card-url">${displayUrl}</div>
+      <div class="card-memo">${site.memo || ''}</div>
+      <div class="card-actions">
+        <button class="btn-sm" onclick="openEdit(${site.id})">編集</button>
+        <button class="btn-sm btn-del" onclick="deleteSite(${site.id})">削除</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function onThumbLoad(id) {
+  const shimmer = document.getElementById('shimmer_' + id);
+  const thumb = document.getElementById('thumb_' + id);
+  const fallback = document.getElementById('fallback_' + id);
+  if (shimmer) shimmer.style.display = 'none';
+  if (fallback) fallback.style.display = 'none';
+  if (thumb) thumb.classList.add('visible');
+}
+function onThumbError(id) {
+  const shimmer = document.getElementById('shimmer_' + id);
+  const thumb = document.getElementById('thumb_' + id);
+  const fallback = document.getElementById('fallback_' + id);
+  const msg = document.getElementById('msg_' + id);
+  if (shimmer) shimmer.style.display = 'none';
+  if (thumb) thumb.style.display = 'none';
+  if (fallback) fallback.style.display = 'flex';
+  if (msg) msg.textContent = 'プレビュー取得失敗';
+}
+
+function renderTabs() {
+  const el = document.getElementById('tabs');
+  /* 「すべて」タブ（削除ボタンなし） */
+  let html = `<button class="tab ${activeGenre==='すべて'?'active':''}" onclick="setGenre('すべて')">
+    すべて<span class="cnt">${data.sites.length}</span>
+  </button>`;
+  data.genres.forEach(g => {
+    const cnt = data.sites.filter(s => s.genre === g).length;
+    /* ジャンルタブに × ボタンを追加 */
+    html += `<button class="tab ${activeGenre===g?'active':''}" onclick="setGenre('${g}')">
+      ${g}<span class="cnt">${cnt}</span>
+      <span class="tab-del" onclick="deleteGenre('${g}', event)" title="このジャンルを削除">✕</span>
+    </button>`;
+  });
+  el.innerHTML = html;
+}
+
+function renderGrid() {
+  const el = document.getElementById('grid');
+  let list = activeGenre === 'すべて' ? data.sites : data.sites.filter(s => s.genre === activeGenre);
+  list = sortByName(list); /* 五十音順 */
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty">サイトが登録されていません<br><span style="font-size:12px;">「＋ 追加」ボタンから登録してください</span></div>`;
+    return;
+  }
+  el.innerHTML = list.map(buildCard).join('');
+}
+
+function render() { renderTabs(); renderGrid(); }
+function setGenre(g) { activeGenre = g; render(); }
+
+function deleteSite(id) {
+  if (!confirm('このサイトを削除しますか？')) return;
+  data.sites = data.sites.filter(x => x.id !== id);
+  saveData(); render();
+}
+
+function updateGenreSelect(selected) {
+  document.getElementById('m-genre').innerHTML = data.genres.map(g =>
+    `<option value="${g}" ${g===selected?'selected':''}>${g}</option>`).join('');
+}
+
+function openAdd() {
+  editId = null;
+  document.getElementById('modal-title').textContent = 'サイトを追加';
+  ['m-url','m-name','m-memo','m-new-genre'].forEach(id => document.getElementById(id).value = '');
+  updateGenreSelect(data.genres[0] || '');
+  document.getElementById('modal-bg').style.display = 'flex';
+  setTimeout(() => document.getElementById('m-url').focus(), 80);
+}
+function openEdit(id) {
+  const s = data.sites.find(x => x.id === id);
+  if (!s) return;
+  editId = id;
+  document.getElementById('modal-title').textContent = 'サイトを編集';
+  document.getElementById('m-url').value = s.url;
+  document.getElementById('m-name').value = s.name;
+  document.getElementById('m-memo').value = s.memo || '';
+  document.getElementById('m-new-genre').value = '';
+  updateGenreSelect(s.genre);
+  document.getElementById('modal-bg').style.display = 'flex';
+}
+function closeModal() { document.getElementById('modal-bg').style.display = 'none'; editId = null; }
+function bgClick(e) { if (e.target === document.getElementById('modal-bg')) closeModal(); }
+
+function addGenre() {
+  const inp = document.getElementById('m-new-genre');
+  const v = inp.value.trim();
+  if (!v) return;
+  if (data.genres.includes(v)) { alert('同じジャンルが既に存在します'); return; }
+  data.genres.push(v); saveData(); updateGenreSelect(v); inp.value = '';
+}
+
+function saveModal() {
+  const url = document.getElementById('m-url').value.trim();
+  if (!url) { alert('URLを入力してください'); document.getElementById('m-url').focus(); return; }
+  let name = document.getElementById('m-name').value.trim();
+  if (!name) { try { name = new URL(url).hostname.replace(/^www\./, ''); } catch(e) { name = url; } }
+  const genre = document.getElementById('m-genre').value;
+  const memo = document.getElementById('m-memo').value.trim();
+  if (editId) {
+    const s = data.sites.find(x => x.id === editId);
+    if (s) { s.name = name; s.url = url; s.genre = genre; s.memo = memo; }
+  } else {
+    data.sites.push({ id: Date.now(), name, url, genre, memo });
+  }
+  saveData(); closeModal(); render();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && document.getElementById('modal-bg').style.display !== 'none') {
+    if (document.activeElement.tagName !== 'TEXTAREA') saveModal();
+  }
+});
+
+render();
+</script>
+</body>
+</html>
