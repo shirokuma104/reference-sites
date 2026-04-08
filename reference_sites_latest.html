@@ -39,17 +39,62 @@
     background: var(--bg-secondary); color: var(--text); min-height: 100vh;
   }
 
+  /* ── ログイン画面 ── */
+  .login-screen {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 2rem;
+    gap: 24px;
+  }
+  .login-card {
+    background: var(--bg);
+    border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-lg);
+    padding: 2rem 2rem 2.5rem;
+    width: 100%; max-width: 360px;
+    text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+  }
+  .login-icon { font-size: 36px; }
+  .login-title { font-size: 18px; font-weight: 500; }
+  .login-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .btn-google {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg); border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-md); padding: 11px 20px;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    font-family: inherit; color: var(--text); width: 100%;
+    justify-content: center; margin-top: 8px;
+  }
+  .btn-google:hover { background: var(--bg-secondary); }
+  .btn-google:active { opacity: 0.7; }
+  .google-icon { width: 18px; height: 18px; }
+
   /* ── Header ── */
   .app-header {
     background: var(--bg); border-bottom: 0.5px solid var(--border-md);
-    padding: 12px 16px; position: sticky; top: 0; z-index: 10;
+    padding: 10px 16px; position: sticky; top: 0; z-index: 10;
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
   }
-  .app-title { font-size: 16px; font-weight: 500; }
+  .app-title { font-size: 15px; font-weight: 500; }
+  .header-right { display: flex; align-items: center; gap: 8px; }
+  .user-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    object-fit: cover; border: 0.5px solid var(--border-md);
+  }
+  .user-name { font-size: 12px; color: var(--text-secondary); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .btn-logout {
+    background: transparent; border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-md); padding: 5px 10px;
+    font-size: 12px; cursor: pointer; color: var(--text-secondary);
+    font-family: inherit;
+  }
+  .btn-logout:active { background: var(--bg-secondary); }
   .btn-add-main {
     background: var(--accent); color: var(--accent-text); border: none;
-    border-radius: var(--radius-md); padding: 8px 16px; font-size: 14px;
-    font-weight: 500; cursor: pointer; font-family: inherit;
+    border-radius: var(--radius-md); padding: 7px 14px;
+    font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit;
   }
   .btn-add-main:active { opacity: 0.7; }
 
@@ -63,27 +108,20 @@
   .tab {
     background: transparent; border: 0.5px solid var(--border-md);
     border-radius: 99px; padding: 5px 13px; font-size: 13px;
-    cursor: pointer; color: var(--text-secondary); font-family: inherit; white-space: nowrap;
-    display: flex; align-items: center; gap: 5px;
+    cursor: pointer; color: var(--text-secondary); font-family: inherit;
+    white-space: nowrap; display: flex; align-items: center; gap: 5px;
   }
   .tab.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
   .cnt { font-size: 11px; opacity: 0.6; }
-
-  /* ジャンル削除ボタン（タブ内） */
   .tab-del {
     display: inline-flex; align-items: center; justify-content: center;
     width: 15px; height: 15px; border-radius: 50%;
     background: rgba(0,0,0,0.15); border: none; cursor: pointer;
-    font-size: 9px; line-height: 1; padding: 0; color: inherit;
-    flex-shrink: 0;
+    font-size: 9px; line-height: 1; padding: 0; color: inherit; flex-shrink: 0;
   }
-  .tab.active .tab-del { background: rgba(255,255,255,0.25); color: var(--accent-text); }
+  .tab.active .tab-del { background: rgba(255,255,255,0.25); }
   .tab-del:hover { background: rgba(0,0,0,0.28); }
   .tab.active .tab-del:hover { background: rgba(255,255,255,0.4); }
-  @media (prefers-color-scheme: dark) {
-    .tab-del { background: rgba(255,255,255,0.15); }
-    .tab-del:hover { background: rgba(255,255,255,0.3); }
-  }
 
   /* ── Grid ── */
   .main { padding: 12px; }
@@ -103,7 +141,6 @@
     display: flex; flex-direction: column; transition: border-color 0.15s;
   }
   .card:hover { border-color: var(--border-md); }
-
   .card-preview {
     height: 115px; position: relative; overflow: hidden;
     flex-shrink: 0; background: var(--bg-secondary);
@@ -120,13 +157,11 @@
     background: linear-gradient(90deg, transparent 0%, var(--bg-tertiary) 50%, transparent 100%);
     animation: shimmer 1.4s infinite;
   }
-
   .thumb-img {
     position: absolute; inset: 0; width: 100%; height: 100%;
     object-fit: cover; object-position: top; opacity: 0; transition: opacity 0.35s;
   }
   .thumb-img.visible { opacity: 1; }
-
   .thumb-fallback {
     position: absolute; inset: 0; display: none;
     flex-direction: column; align-items: center; justify-content: center; gap: 7px;
@@ -160,6 +195,20 @@
   .btn-del:active { background: var(--danger-bg); }
 
   .empty { grid-column: 1/-1; padding: 3rem 1rem; text-align: center; color: var(--text-tertiary); font-size: 14px; line-height: 2.2; }
+
+  /* ── ローディング画面 ── */
+  .loading-screen {
+    min-height: 100vh; display: flex;
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 16px;
+  }
+  .loading-spinner {
+    width: 32px; height: 32px; border: 2.5px solid var(--border-md);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 14px; color: var(--text-secondary); }
 
   /* ── Modal ── */
   .modal-bg {
@@ -208,13 +257,48 @@
 </head>
 <body>
 
-<header class="app-header">
-  <span class="app-title">📌 参考サイト一覧</span>
-  <button class="btn-add-main" onclick="openAdd()">＋ 追加</button>
-</header>
-<div class="tabs-wrapper"><div class="tabs" id="tabs"></div></div>
-<main class="main"><div class="grid" id="grid"></div></main>
+<!-- ローディング画面 -->
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">読み込み中...</div>
+</div>
 
+<!-- ログイン画面 -->
+<div id="login-screen" style="display:none;">
+  <div class="login-screen">
+    <div class="login-card">
+      <div class="login-icon">📌</div>
+      <div class="login-title">参考サイト一覧</div>
+      <div class="login-desc">Googleアカウントでログインすると、どの端末からでも同じデータにアクセスできます。</div>
+      <button class="btn-google" onclick="loginWithGoogle()">
+        <svg class="google-icon" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Googleでログイン
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- メインアプリ -->
+<div id="app-screen" style="display:none;">
+  <header class="app-header">
+    <span class="app-title">📌 参考サイト一覧</span>
+    <div class="header-right">
+      <img class="user-avatar" id="user-avatar" src="" alt="" />
+      <span class="user-name" id="user-name"></span>
+      <button class="btn-logout" onclick="logout()">ログアウト</button>
+      <button class="btn-add-main" onclick="openAdd()">＋ 追加</button>
+    </div>
+  </header>
+  <div class="tabs-wrapper"><div class="tabs" id="tabs"></div></div>
+  <main class="main"><div class="grid" id="grid"></div></main>
+</div>
+
+<!-- モーダル -->
 <div class="modal-bg" id="modal-bg" style="display:none;" onclick="bgClick(event)">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -240,8 +324,24 @@
   </div>
 </div>
 
-<script>
-const STORAGE_KEY = 'ref_sites_v5';
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDVu8g_P0ktXQaeX74Ku6ojdAAwgbyplYk",
+  authDomain: "reference-sites.firebaseapp.com",
+  projectId: "reference-sites",
+  storageBucket: "reference-sites.firebasestorage.app",
+  messagingSenderId: "41207211885",
+  appId: "1:41207211885:web:c0aec45c45c3dbda579c64",
+  measurementId: "G-SB3XBN7M94"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 const PALETTES = ['#4f86f7','#e8734a','#6abf69','#e06c9f','#7c6af7','#f7c948','#4fc3f7','#f76f6f','#56c8b0','#c26af7','#f7a54a','#6ab8f7'];
 function strToColor(str) {
@@ -250,31 +350,64 @@ function strToColor(str) {
   return PALETTES[Math.abs(h) % PALETTES.length];
 }
 
-function loadData() {
-  try {
-    const d = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (d && d.genres && d.sites) return d;
-  } catch(e) {}
-  return {
-    genres: ['AI関連', '動画制作', 'デザイン', '開発'],
-    sites: [
-      { id: 1, name: 'Claude', url: 'https://claude.ai', genre: 'AI関連', memo: 'Anthropic製AI' },
-      { id: 2, name: 'Canva', url: 'https://www.canva.com', genre: 'デザイン', memo: 'オンラインデザインツール' },
-      { id: 3, name: 'YouTube', url: 'https://www.youtube.com', genre: '動画制作', memo: '動画投稿・参考視聴' }
-    ]
-  };
-}
-function saveData() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {} }
-
-let data = loadData();
+let currentUser = null;
+let data = { genres: ['AI関連', '動画制作', 'デザイン', '開発'], sites: [] };
 let activeGenre = 'すべて';
 let editId = null;
 
-/* 五十音順ソート */
+/* ── Firestore読み書き ── */
+async function loadFromFirestore() {
+  try {
+    const ref = doc(db, 'users', currentUser.uid);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      data = snap.data();
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function saveToFirestore() {
+  try {
+    const ref = doc(db, 'users', currentUser.uid);
+    await setDoc(ref, data);
+  } catch(e) { console.error(e); }
+}
+
+/* ── 認証 ── */
+window.loginWithGoogle = async function() {
+  const provider = new GoogleAuthProvider();
+  try {
+    await signInWithPopup(auth, provider);
+  } catch(e) { alert('ログインに失敗しました。もう一度お試しください。'); }
+};
+
+window.logout = async function() {
+  if (!confirm('ログアウトしますか？')) return;
+  await signOut(auth);
+};
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    document.getElementById('user-avatar').src = user.photoURL || '';
+    document.getElementById('user-name').textContent = user.displayName || '';
+    await loadFromFirestore();
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'block';
+    render();
+  } else {
+    currentUser = null;
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'block';
+  }
+});
+
+/* ── ユーティリティ ── */
 function sortByName(list) {
   return [...list].sort((a, b) => a.name.localeCompare(b.name, 'ja'));
 }
-
 function getScreenshotUrl(url) {
   return `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url`;
 }
@@ -285,22 +418,22 @@ function getHostLetter(url) {
   try { return new URL(url).hostname.replace(/^www\./, '')[0].toUpperCase(); } catch(e) { return '?'; }
 }
 
-/* ジャンル削除 */
-function deleteGenre(genre, e) {
-  e.stopPropagation(); // タブ選択を防ぐ
-  const siteCount = data.sites.filter(s => s.genre === genre).length;
-  if (siteCount > 0) {
-    if (!confirm(`「${genre}」を削除しますか？\nこのジャンルに登録された ${siteCount} 件のサイトも一緒に削除されます。`)) return;
-    data.sites = data.sites.filter(s => s.genre !== genre);
-  } else {
-    if (!confirm(`「${genre}」を削除しますか？`)) return;
-  }
+/* ── ジャンル削除 ── */
+window.deleteGenre = function(genre, e) {
+  e.stopPropagation();
+  const cnt = data.sites.filter(s => s.genre === genre).length;
+  const msg = cnt > 0
+    ? `「${genre}」を削除しますか？\nこのジャンルの ${cnt} 件のサイトも一緒に削除されます。`
+    : `「${genre}」を削除しますか？`;
+  if (!confirm(msg)) return;
+  if (cnt > 0) data.sites = data.sites.filter(s => s.genre !== genre);
   data.genres = data.genres.filter(g => g !== genre);
   if (activeGenre === genre) activeGenre = 'すべて';
-  saveData();
+  saveToFirestore();
   render();
-}
+};
 
+/* ── カード ── */
 function buildCard(site) {
   const color = strToColor(site.url);
   const screenshotUrl = getScreenshotUrl(site.url);
@@ -316,8 +449,8 @@ function buildCard(site) {
       <div class="shimmer" id="shimmer_${site.id}"></div>
       <img class="thumb-img" id="thumb_${site.id}"
         src="${screenshotUrl}" alt=""
-        onload="onThumbLoad(${site.id})"
-        onerror="onThumbError(${site.id})" />
+        onload="onThumbLoad('${site.id}')"
+        onerror="onThumbError('${site.id}')" />
       <div class="thumb-fallback" id="fallback_${site.id}">
         <div class="favicon-box">${faviconInner}</div>
         <span class="thumb-msg" id="msg_${site.id}">読み込み中...</span>
@@ -329,22 +462,22 @@ function buildCard(site) {
       <div class="card-url">${displayUrl}</div>
       <div class="card-memo">${site.memo || ''}</div>
       <div class="card-actions">
-        <button class="btn-sm" onclick="openEdit(${site.id})">編集</button>
-        <button class="btn-sm btn-del" onclick="deleteSite(${site.id})">削除</button>
+        <button class="btn-sm" onclick="openEdit('${site.id}')">編集</button>
+        <button class="btn-sm btn-del" onclick="deleteSite('${site.id}')">削除</button>
       </div>
     </div>
   </div>`;
 }
 
-function onThumbLoad(id) {
+window.onThumbLoad = function(id) {
   const shimmer = document.getElementById('shimmer_' + id);
   const thumb = document.getElementById('thumb_' + id);
   const fallback = document.getElementById('fallback_' + id);
   if (shimmer) shimmer.style.display = 'none';
   if (fallback) fallback.style.display = 'none';
   if (thumb) thumb.classList.add('visible');
-}
-function onThumbError(id) {
+};
+window.onThumbError = function(id) {
   const shimmer = document.getElementById('shimmer_' + id);
   const thumb = document.getElementById('thumb_' + id);
   const fallback = document.getElementById('fallback_' + id);
@@ -353,20 +486,17 @@ function onThumbError(id) {
   if (thumb) thumb.style.display = 'none';
   if (fallback) fallback.style.display = 'flex';
   if (msg) msg.textContent = 'プレビュー取得失敗';
-}
+};
 
+/* ── レンダリング ── */
 function renderTabs() {
   const el = document.getElementById('tabs');
-  /* 「すべて」タブ（削除ボタンなし） */
-  let html = `<button class="tab ${activeGenre==='すべて'?'active':''}" onclick="setGenre('すべて')">
-    すべて<span class="cnt">${data.sites.length}</span>
-  </button>`;
+  let html = `<button class="tab ${activeGenre==='すべて'?'active':''}" onclick="setGenre('すべて')">すべて<span class="cnt">${data.sites.length}</span></button>`;
   data.genres.forEach(g => {
     const cnt = data.sites.filter(s => s.genre === g).length;
-    /* ジャンルタブに × ボタンを追加 */
     html += `<button class="tab ${activeGenre===g?'active':''}" onclick="setGenre('${g}')">
       ${g}<span class="cnt">${cnt}</span>
-      <span class="tab-del" onclick="deleteGenre('${g}', event)" title="このジャンルを削除">✕</span>
+      <span class="tab-del" onclick="deleteGenre('${g}', event)" title="削除">✕</span>
     </button>`;
   });
   el.innerHTML = html;
@@ -375,7 +505,7 @@ function renderTabs() {
 function renderGrid() {
   const el = document.getElementById('grid');
   let list = activeGenre === 'すべて' ? data.sites : data.sites.filter(s => s.genre === activeGenre);
-  list = sortByName(list); /* 五十音順 */
+  list = sortByName(list);
   if (list.length === 0) {
     el.innerHTML = `<div class="empty">サイトが登録されていません<br><span style="font-size:12px;">「＋ 追加」ボタンから登録してください</span></div>`;
     return;
@@ -384,28 +514,30 @@ function renderGrid() {
 }
 
 function render() { renderTabs(); renderGrid(); }
-function setGenre(g) { activeGenre = g; render(); }
+window.setGenre = function(g) { activeGenre = g; render(); };
 
-function deleteSite(id) {
+/* ── CRUD ── */
+window.deleteSite = function(id) {
   if (!confirm('このサイトを削除しますか？')) return;
   data.sites = data.sites.filter(x => x.id !== id);
-  saveData(); render();
-}
+  saveToFirestore(); render();
+};
 
 function updateGenreSelect(selected) {
   document.getElementById('m-genre').innerHTML = data.genres.map(g =>
     `<option value="${g}" ${g===selected?'selected':''}>${g}</option>`).join('');
 }
 
-function openAdd() {
+window.openAdd = function() {
   editId = null;
   document.getElementById('modal-title').textContent = 'サイトを追加';
   ['m-url','m-name','m-memo','m-new-genre'].forEach(id => document.getElementById(id).value = '');
   updateGenreSelect(data.genres[0] || '');
   document.getElementById('modal-bg').style.display = 'flex';
   setTimeout(() => document.getElementById('m-url').focus(), 80);
-}
-function openEdit(id) {
+};
+
+window.openEdit = function(id) {
   const s = data.sites.find(x => x.id === id);
   if (!s) return;
   editId = id;
@@ -416,19 +548,23 @@ function openEdit(id) {
   document.getElementById('m-new-genre').value = '';
   updateGenreSelect(s.genre);
   document.getElementById('modal-bg').style.display = 'flex';
-}
-function closeModal() { document.getElementById('modal-bg').style.display = 'none'; editId = null; }
-function bgClick(e) { if (e.target === document.getElementById('modal-bg')) closeModal(); }
+};
 
-function addGenre() {
+window.closeModal = function() { document.getElementById('modal-bg').style.display = 'none'; editId = null; };
+window.bgClick = function(e) { if (e.target === document.getElementById('modal-bg')) window.closeModal(); };
+
+window.addGenre = function() {
   const inp = document.getElementById('m-new-genre');
   const v = inp.value.trim();
   if (!v) return;
   if (data.genres.includes(v)) { alert('同じジャンルが既に存在します'); return; }
-  data.genres.push(v); saveData(); updateGenreSelect(v); inp.value = '';
-}
+  data.genres.push(v);
+  saveToFirestore();
+  updateGenreSelect(v);
+  inp.value = '';
+};
 
-function saveModal() {
+window.saveModal = function() {
   const url = document.getElementById('m-url').value.trim();
   if (!url) { alert('URLを入力してください'); document.getElementById('m-url').focus(); return; }
   let name = document.getElementById('m-name').value.trim();
@@ -439,19 +575,17 @@ function saveModal() {
     const s = data.sites.find(x => x.id === editId);
     if (s) { s.name = name; s.url = url; s.genre = genre; s.memo = memo; }
   } else {
-    data.sites.push({ id: Date.now(), name, url, genre, memo });
+    data.sites.push({ id: Date.now().toString(), name, url, genre, memo });
   }
-  saveData(); closeModal(); render();
-}
+  saveToFirestore(); window.closeModal(); render();
+};
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') window.closeModal();
   if (e.key === 'Enter' && document.getElementById('modal-bg').style.display !== 'none') {
-    if (document.activeElement.tagName !== 'TEXTAREA') saveModal();
+    if (document.activeElement.tagName !== 'TEXTAREA') window.saveModal();
   }
 });
-
-render();
 </script>
 </body>
 </html>
